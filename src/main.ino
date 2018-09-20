@@ -5,6 +5,8 @@ const int clockPin = 8; //Pin connected to SH_CP of 74HC595
 const int dataPin = 11; //Pin connected to DS of 74HC595
 const int cageArrivalIndicatorPin = 7;
 const int datArray[9] = {3, 159, 37, 13, 153, 73, 65, 31, 1}; // array without the decimal
+const int topFloorDetectionPin = 6; //Pin connected to analog 0
+const int bottomFloorDetectionPin = 5; //Pin connected to analog 1
 
 void setup () {
   pinMode(latchPin,OUTPUT);
@@ -32,13 +34,11 @@ void loop() {
   reading the analog input of both the ir sensors which are mounted to the floor.
 */
 int isCageAtFloor() {
-  const int topFloorDetectionPin = 0; //Pin connected to analog 0
-  const int bottomFloorDetectionPin = 1; //Pin connected to analog 1
 
-  int topDetectionOutput = analogRead(topFloorDetectionPin);
-  int bottomDetectionOutput = analogRead(bottomFloorDetectionPin);
+  int topDetectionOutput = digitalRead(topFloorDetectionPin);
+  int bottomDetectionOutput = digitalRead(bottomFloorDetectionPin);
 
-  if (topDetectionOutput < 300 && bottomDetectionOutput < 300) {
+  if (topDetectionOutput == 1 && bottomDetectionOutput == 1) {
     return 1;
   }
 
