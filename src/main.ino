@@ -13,6 +13,8 @@ void setup () {
   pinMode(clockPin,OUTPUT);
   pinMode(dataPin,OUTPUT);
   pinMode(cageArrivalIndicatorPin, OUTPUT);
+  pinMode(topFloorDetectionPin, INPUT);
+  pinMode(bottomFloorDetectionPin, INPUT);
 
   digitalWrite(cageArrivalIndicatorPin, LOW);
 
