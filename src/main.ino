@@ -1,18 +1,29 @@
 #include <Arduino.h>
 
-const int latchPin = 12; //Pin connected to ST_CP of 74HC595
-const int clockPin = 8; //Pin connected to SH_CP of 74HC595
-const int dataPin = 11; //Pin connected to DS of 74HC595
-const int cageArrivalIndicatorPin = 7;
+#define latchPin 12
+#define dataPin 11
+#define clockPin 8
+#define cageArrivalIndicatorPin 7
+#define topFloorDetectionPin 6
+#define bottomFloorDetectionPin 5
+#define buttonDown 4
+#define buttonUp 3
+#define ledDown 2
+#define ledUp 1
+
+
 const int datArray[9] = {3, 159, 37, 13, 153, 73, 65, 31, 1}; // array without the decimal
-const int topFloorDetectionPin = 6; //Pin connected to analog 0
-const int bottomFloorDetectionPin = 5; //Pin connected to analog 1
 
 void setup () {
   pinMode(latchPin,OUTPUT);
   pinMode(clockPin,OUTPUT);
   pinMode(dataPin,OUTPUT);
+  pinMode(ledUp, OUTPUT);
+  pinMode(ledDown, OUTPUT);
   pinMode(cageArrivalIndicatorPin, OUTPUT);
+
+  pinMode(buttonDown, INPUT);
+  pinMode(buttonUp, INPUT);
   pinMode(topFloorDetectionPin, INPUT);
   pinMode(bottomFloorDetectionPin, INPUT);
 
@@ -24,11 +35,29 @@ void setup () {
 }
 
 void loop() {
+  //check status of ir sensors and buttons.
   if(isCageAtFloor()) {
     digitalWrite(cageArrivalIndicatorPin, HIGH);
+
+    //turn off button lights ones the cage is at the floor.
+    digitalWrite(ledDown, LOW);
+    digitalWrite(ledUp, LOW);
   } else {
     digitalWrite(cageArrivalIndicatorPin, LOW);
   }
+
+  if(digitalRead(buttonDown) == HIGH) {
+    digitalWrite(ledDown, HIGH);
+  }
+
+  if(digitalRead(buttonUp) == HIGH) {
+    digitalWrite(ledUp, HIGH);
+  }
+
+  // for (int i = 0; i <= sizeof(datArray)/sizeof(datArray[0]); i++) {
+  //   setFloorIndicatorDisplay(datArray[i]);
+  //   delay(1000);
+  // }
 }
 
 /*
@@ -37,9 +66,9 @@ void loop() {
 */
 int isCageAtFloor() {
 
-  int topDetectionOutput = digitalRead(topFloorDetectionPin);
-  int bottomDetectionOutput = digitalRead(bottomFloorDetectionPin);
-
+  int topDetectionOutput = 1 - digitalRead(topFloorDetectionPin);
+  int bottomDetectionOutput = 1 - digitalRead(bottomFloorDetectionPin);
+  Serial.println(topDetectionOutput);
   if (topDetectionOutput == 1 && bottomDetectionOutput == 1) {
     return 1;
   }
