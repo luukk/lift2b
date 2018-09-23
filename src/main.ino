@@ -1,5 +1,6 @@
 #include <Arduino.h>
 
+/* Define pins */
 #define latchPin 12
 #define dataPin 11
 #define clockPin 8
@@ -12,9 +13,10 @@
 #define ledUp 1
 
 
-const int datArray[9] = {3, 159, 37, 13, 153, 73, 65, 31, 1}; // array without the decimal
+const int datArray[9] = {3, 159, 37, 13, 153, 73, 65, 31, 1}; // 10 digits for shift register
 
 void setup () {
+  /* Configure all pins */
   pinMode(latchPin,OUTPUT);
   pinMode(clockPin,OUTPUT);
   pinMode(dataPin,OUTPUT);
@@ -35,29 +37,27 @@ void setup () {
 }
 
 void loop() {
-  //check status of ir sensors and buttons.
+  //Check status of ir sensors
   if(isCageAtFloor()) {
     digitalWrite(cageArrivalIndicatorPin, HIGH);
 
-    //turn off button lights ones the cage is at the floor.
+    //Turn off button lights ones the cage is at the floor.
     digitalWrite(ledDown, LOW);
     digitalWrite(ledUp, LOW);
   } else {
-    digitalWrite(cageArrivalIndicatorPin, LOW);
+    digitalWrite(cageArrivalIndicatorPin, LOW); //Dible LED if cage is not at the floor
   }
 
+  // Check status of buttons.
   if(digitalRead(buttonDown) == HIGH) {
-    digitalWrite(ledDown, HIGH);
+    digitalWrite(ledDown, HIGH); // Enable button LED
+    Serial.println("luuk wilt omhoog");
   }
 
   if(digitalRead(buttonUp) == HIGH) {
-    digitalWrite(ledUp, HIGH);
+    digitalWrite(ledUp, HIGH); // Enable button LED
+    Serial.println("luuk wilt omlaag");
   }
-
-  // for (int i = 0; i <= sizeof(datArray)/sizeof(datArray[0]); i++) {
-  //   setFloorIndicatorDisplay(datArray[i]);
-  //   delay(1000);
-  // }
 }
 
 /*
@@ -65,10 +65,9 @@ void loop() {
   reading the analog input of both the ir sensors which are mounted to the floor.
 */
 int isCageAtFloor() {
-
   int topDetectionOutput = 1 - digitalRead(topFloorDetectionPin);
   int bottomDetectionOutput = 1 - digitalRead(bottomFloorDetectionPin);
-  Serial.println(topDetectionOutput);
+
   if (topDetectionOutput == 1 && bottomDetectionOutput == 1) {
     return 1;
   }
