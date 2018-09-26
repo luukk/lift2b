@@ -3,14 +3,14 @@
 /* Define pins */
 #define latchPin 12
 #define dataPin 11
-#define clockPin 8
-#define cageArrivalIndicatorPin 7
-#define topFloorDetectionPin 6
-#define bottomFloorDetectionPin 5
-#define buttonDown 4
-#define buttonUp 3
-#define ledDown 2
-#define ledUp 1
+#define clockPin 9
+#define cageArrivalIndicatorPin 8
+#define topFloorDetectionPin 7
+#define bottomFloorDetectionPin 6
+#define buttonDown 5
+#define buttonUp 4
+#define ledDown 3
+#define ledUp 2
 
 
 const int datArray[9] = {3, 159, 37, 13, 153, 73, 65, 31, 1}; // 10 digits for shift register
@@ -45,16 +45,16 @@ void loop() {
     digitalWrite(ledDown, LOW);
     digitalWrite(ledUp, LOW);
   } else {
-    digitalWrite(cageArrivalIndicatorPin, LOW); //Dible LED if cage is not at the floor
+    digitalWrite(cageArrivalIndicatorPin, LOW); //Disable LED if cage is not at the floor
   }
 
   // Check status of buttons.
-  if(digitalRead(buttonDown) == HIGH) {
+  if(digitalRead(buttonDown) == 1) {
     digitalWrite(ledDown, HIGH); // Enable button LED
     Serial.println("luuk wilt omhoog");
   }
 
-  if(digitalRead(buttonUp) == HIGH) {
+  if(digitalRead(buttonUp) == 1) {
     digitalWrite(ledUp, HIGH); // Enable button LED
     Serial.println("luuk wilt omlaag");
   }
