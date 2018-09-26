@@ -31,7 +31,18 @@ void setup () {
 
   digitalWrite(cageArrivalIndicatorPin, LOW);
 
-  setFloorIndicatorDisplay(159); //writes the floor number (1) to the display
+  setFloorIndicatorDisplay(159);
+  //writes the floor number (1) to the display. Byte's are inverted since the 7
+  //segment display is a common anode.
+  // Number 0 :  00000011     3
+  // Number 1 :  10101111     159
+  // Number 2 :  00100101     37
+  // Number 3 :  00001101     13
+  // Number 4 :  10011001     153
+  // Number 5 :  01001001     73
+  // Number 6 :  01000001     65
+  // Number 7 :  00011111     31
+  // Number 8 :  00000001     1
 
   Serial.begin(9600);
 }
