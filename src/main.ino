@@ -12,9 +12,6 @@
 #define ledDown 3
 #define ledUp 2
 
-
-const int datArray[9] = {3, 159, 37, 13, 153, 73, 65, 31, 1}; // 10 digits for shift register
-
 void setup () {
   /* Configure all pins */
   pinMode(latchPin,OUTPUT);
