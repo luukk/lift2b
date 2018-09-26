@@ -26,8 +26,11 @@ void setup () {
   pinMode(topFloorDetectionPin, INPUT);
   pinMode(bottomFloorDetectionPin, INPUT);
 
+  //boot in 'save mode'
   digitalWrite(cageArrivalIndicatorPin, LOW);
-
+  digitalWrite(buttonDown, LOW);
+  digitalWrite(buttonUp, LOW);
+  
   setFloorIndicatorDisplay(159);
   //writes the floor number (1) to the display. Byte's are inverted since the 7
   //segment display is a common anode.
