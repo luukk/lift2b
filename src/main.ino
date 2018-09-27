@@ -1,16 +1,19 @@
 #include <Arduino.h>
 
 /* Define pins */
-#define latchPin 12
-#define dataPin 11
-#define clockPin 9
-#define cageArrivalIndicatorPin 8
-#define topFloorDetectionPin 7
-#define bottomFloorDetectionPin 6
-#define buttonDown 5
-#define buttonUp 4
-#define ledDown 3
-#define ledUp 2
+#define latchPin 12               //RCK shift register
+#define dataPin 11                //SER shift register
+#define clockPin 9                //SCK shift register
+#define cageArrivalIndicatorPin 8 //LED that indicates the elevator cage is at the floor
+#define topFloorDetectionPin 7    //IR sensor mounted at the top of the floor
+#define bottomFloorDetectionPin 6 //IR sensor mounted at the bottom of the floor
+#define buttonDown 4              //Button down
+#define buttonUp 5                //Button up
+#define ledDown 2                 //LED in button down
+#define ledUp 3                   //LED in button up
+
+// array of bytes to display 1 to 5 on the 7 segment display
+const int segmentDisplayNumbers[6] = {3, 159, 37, 13, 153, 73};
 
 void setup () {
   /* Configure all pins */
@@ -30,7 +33,7 @@ void setup () {
   digitalWrite(cageArrivalIndicatorPin, LOW);
   digitalWrite(buttonDown, LOW);
   digitalWrite(buttonUp, LOW);
-  
+
   setFloorIndicatorDisplay(159);
   //writes the floor number (1) to the display. Byte's are inverted since the 7
   //segment display is a common anode.
@@ -40,9 +43,6 @@ void setup () {
   // Number 3 :  00001101     13
   // Number 4 :  10011001     153
   // Number 5 :  01001001     73
-  // Number 6 :  01000001     65
-  // Number 7 :  00011111     31
-  // Number 8 :  00000001     1
 
   Serial.begin(9600);
 }
@@ -50,7 +50,7 @@ void setup () {
 void loop() {
   //Check status of ir sensors
   if(isCageAtFloor()) {
-    digitalWrite(cageArrivalIndicatorPin, HIGH);
+    digitalWrite(cageArrivalIndicatorPin, HIGH); //Set indicator led HIGH
 
     //Turn off button lights ones the cage is at the floor.
     digitalWrite(ledDown, LOW);
