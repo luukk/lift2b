@@ -24,15 +24,16 @@ void setup () {
   pinMode(ledDown, OUTPUT);
   pinMode(cageArrivalIndicatorPin, OUTPUT);
 
-  pinMode(buttonDown, INPUT);
-  pinMode(buttonUp, INPUT);
+  pinMode(buttonDown, INPUT_PULLUP);
+  pinMode(buttonUp, INPUT_PULLUP);
+
   pinMode(topFloorDetectionPin, INPUT);
   pinMode(bottomFloorDetectionPin, INPUT);
 
   //boot in 'save mode'
   digitalWrite(cageArrivalIndicatorPin, LOW);
-  digitalWrite(buttonDown, LOW);
-  digitalWrite(buttonUp, LOW);
+  digitalWrite(ledDown, LOW);
+  digitalWrite(ledUp, LOW);
 
   setFloorIndicatorDisplay(159);
   //writes the floor number (1) to the display. Byte's are inverted since the 7
@@ -60,12 +61,12 @@ void loop() {
   }
 
   // Check status of buttons.
-  if(digitalRead(buttonDown) == 1) {
+  if(digitalRead(buttonDown) == LOW) {
     digitalWrite(ledDown, HIGH); // Enable button LED
     Serial.println("luuk wilt omhoog");
   }
 
-  if(digitalRead(buttonUp) == 1) {
+  if(digitalRead(buttonUp) == LOW) {
     digitalWrite(ledUp, HIGH); // Enable button LED
     Serial.println("luuk wilt omlaag");
   }
