@@ -88,6 +88,8 @@ void loop() {
 void receiveFromMaster() {
   floorNumber = Wire.read();
   doorOpen = Wire.read();
+
+  setFloorIndicatorDisplay(floorNumber);
 }
 
 /* Writes data to master  */
