@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <Wire.h>
 
 /* Define pins */
 #define latchPin 12               //RCK shift register
@@ -11,6 +12,10 @@
 #define buttonUp 5                //Button up
 #define ledDown 2                 //LED in button down
 #define ledUp 3                   //LED in button up
+
+int floorNumber = 0;               // Defaults to zero which means the lift always starts at the bottom
+int doorOpen = 0;
+int cageArrivalStatus = 0;
 
 // array of bytes to display 1 to 5 on the 7 segment display
 const int segmentDisplayNumbers[6] = {3, 159, 37, 13, 153, 73};
@@ -46,11 +51,18 @@ void setup () {
   // Number 5 :  01001001     73
 
   Serial.begin(9600);
+
+  // For communication
+  Wire.begin(8);                  // Start I2C communication // https://www.arduino.cc/en/Reference/Wire inside NOTE: addresses should start from 8
+  Wire.onRequest(requestEvent);         // Set the event handler to hande data sending to the master
+  Wire.onReceive(receiveFromMaster);
 }
 
 void loop() {
   //Check status of ir sensors
   if(isCageAtFloor()) {
+    cageArrivalStatus = 1;
+
     digitalWrite(cageArrivalIndicatorPin, HIGH); //Set indicator led HIGH
 
     //Turn off button lights ones the cage is at the floor.
@@ -70,6 +82,20 @@ void loop() {
     digitalWrite(ledUp, HIGH); // Enable button LED
     Serial.println("luuk wilt omlaag");
   }
+}
+
+/* Assigns received data from the master to variables. */
+void receiveFromMaster() {
+  floorNumber = Wire.read();
+  doorOpen = Wire.read();
+}
+
+/* Writes data to master  */
+void requestEvent() {
+  Wire.write(!buttonDown); // inverted state because of input pullup
+  Wire.write(!buttonUp);
+  Wire.write(cageArrivalStatus);
+  // as expected by master
 }
 
 /*
