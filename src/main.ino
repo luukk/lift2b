@@ -74,6 +74,7 @@ void loop() {
       digitalWrite(ledUp, LOW);
     }
   } else {
+    cageArrivalStatus = 0;
     digitalWrite(cageArrivalIndicatorPin, LOW); //Disable LED if cage is not at the floor
   }
 
