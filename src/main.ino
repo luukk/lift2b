@@ -65,9 +65,14 @@ void loop() {
 
     digitalWrite(cageArrivalIndicatorPin, HIGH); //Set indicator led HIGH
 
-    //Turn off button lights ones the cage is at the floor.
-    digitalWrite(ledDown, LOW);
-    digitalWrite(ledUp, LOW);
+    /*
+      Turn off button lights ones the cage is at the floor. doorOpen is one if
+      the cage is going to this floor and arrived at this floor.
+    */
+    if(doorOpen == 1) {
+      digitalWrite(ledDown, LOW);
+      digitalWrite(ledUp, LOW);
+    }
   } else {
     digitalWrite(cageArrivalIndicatorPin, LOW); //Disable LED if cage is not at the floor
   }
