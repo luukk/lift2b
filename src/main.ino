@@ -16,6 +16,8 @@
 int floorNumber = 0;               // Defaults to zero which means the lift always starts at the bottom
 int doorOpen = 0;
 int cageArrivalStatus = 0;
+int buttonUpState = 0;
+int buttonDownState = 0;
 
 // array of bytes to display 1 to 5 on the 7 segment display
 const int segmentDisplayNumbers[6] = {3, 159, 37, 13, 153, 73};
@@ -72,6 +74,8 @@ void loop() {
     if(doorOpen == 1) {
       digitalWrite(ledDown, LOW);
       digitalWrite(ledUp, LOW);
+      buttonUpState = 0;
+      buttonDownState = 0;
     }
   } else {
     cageArrivalStatus = 0;
@@ -81,11 +85,13 @@ void loop() {
   // Check status of buttons.
   if(digitalRead(buttonDown) == LOW) {
     digitalWrite(ledDown, HIGH); // Enable button LED
+    buttonDownState = 1;
     Serial.println("luuk wilt omhoog");
   }
 
   if(digitalRead(buttonUp) == LOW) {
     digitalWrite(ledUp, HIGH); // Enable button LED
+    buttonUpState = 1;
     Serial.println("luuk wilt omlaag");
   }
 }
@@ -94,14 +100,15 @@ void loop() {
 void receiveFromMaster() {
   floorNumber = Wire.read();
   doorOpen = Wire.read();
-
+  Serial.println(floorNumber);
   setFloorIndicatorDisplay(floorNumber);
 }
 
 /* Writes data to master  */
 void requestEvent() {
-  Wire.write(!buttonDown); // inverted state because of input pullup
-  Wire.write(!buttonUp);
+//  Serial.println(cageArrivalStatus);
+  Wire.write(buttonDownState); // inverted state because of input pullup
+  Wire.write(buttonUpState);
   Wire.write(cageArrivalStatus);
   // as expected by master
 }
