@@ -4,8 +4,8 @@
 /* Define pins */
 #define latchPin 12               //RCK shift register
 #define dataPin 11                //SER shift register
-#define clockPin 9                //SCK shift register
-#define cageArrivalIndicatorPin 8 //LED that indicates the elevator cage is at the floor
+#define clockPin 8                //SCK shift register
+#define cageArrivalIndicatorPin 9 //LED that indicates the elevator cage is at the floor
 #define topFloorDetectionPin 7    //IR sensor mounted at the top of the floor
 #define bottomFloorDetectionPin 6 //IR sensor mounted at the bottom of the floor
 #define buttonDown 4              //Button down
@@ -18,6 +18,7 @@ int doorOpen = 0;
 int cageArrivalStatus = 0;
 int buttonUpState = 0;
 int buttonDownState = 0;
+int liftAvailable = 0;
 
 // array of bytes to display 1 to 5 on the 7 segment display
 const int segmentDisplayNumbers[6] = {3, 159, 37, 13, 153, 73};
@@ -42,7 +43,6 @@ void setup () {
   digitalWrite(ledDown, LOW);
   digitalWrite(ledUp, LOW);
 
-  setFloorIndicatorDisplay(159);
   //writes the floor number (1) to the display. Byte's are inverted since the 7
   //segment display is a common anode.
   // Number 0 :  00000011     3
@@ -64,6 +64,7 @@ void loop() {
   //Check status of ir sensors
   if(isCageAtFloor()) {
     cageArrivalStatus = 1;
+    liftAvailable = 1;
 
     digitalWrite(cageArrivalIndicatorPin, HIGH); //Set indicator led HIGH
 
@@ -79,6 +80,7 @@ void loop() {
     }
   } else {
     cageArrivalStatus = 0;
+    liftAvailable = 0;
     digitalWrite(cageArrivalIndicatorPin, LOW); //Disable LED if cage is not at the floor
   }
 
@@ -100,15 +102,15 @@ void loop() {
 void receiveFromMaster() {
   floorNumber = Wire.read();
   doorOpen = Wire.read();
-  Serial.println(floorNumber);
   setFloorIndicatorDisplay(floorNumber);
 }
 
 /* Writes data to master  */
 void requestEvent() {
-//  Serial.println(cageArrivalStatus);
-  Wire.write(buttonDownState); // inverted state because of input pullup
+ Serial.println(liftAvailable);
+  Wire.write(buttonDownState);
   Wire.write(buttonUpState);
+  Wire.write(liftAvailable);
   Wire.write(cageArrivalStatus);
   // as expected by master
 }
